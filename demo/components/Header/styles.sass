@@ -1,0 +1,24 @@
+@import theme/mixins
+
+.Header
+    align-items: center
+    display: flex
+    justify-content: center
+
+.Header__Icon
+    @include size(24px)
+    margin-right: 5px
+    @include from-tab
+        @include size(30px)
+        margin-right: 10px
+    img
+        @include size(100%)
+        display: block
+
+.Header__Title
+    font-size: 24px
+    font-weight: 500
+    line-height: 1
+    margin: 0
+    @include from-tab
+        font-size: 30px

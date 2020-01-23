@@ -1,0 +1,95 @@
+@mixin camera-button
+    @include no-ios-tap
+    @include size(50px)
+    background-color: transparent
+    border: none
+    border-radius: 50%
+    color: transparent
+    cursor: pointer
+    font-size: 0
+    opacity: 1
+    position: absolute
+    transition: opacity .1s ease
+    &:focus
+        outline: none
+    &[disabled]
+        cursor: default
+        opacity: 0.5
+
+@mixin no-ios-tap
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+    -webkit-tap-highlight-color: transparent
+
+@mixin size($size: 0)
+    height: $size
+    width: $size
+
+.CameraButtons
+    position: relative
+    z-index: 2
+    &:after
+        content: ''
+        display: none
+        height: 100%
+        left: 0
+        position: absolute
+        top: 0
+        width: 100%
+    &_readonly
+        &:after
+            display: block
+    &_mobile
+        background-color: black
+        box-sizing: border-box
+        height: 80px
+        min-height: 80px
+        position: relative
+    &_tab
+        background-color: transparent
+        height: 100%
+        position: absolute
+        right: 0
+        top: 0
+        width: 80px
+
+.CameraButtons__TakePhoto
+    @include camera-button
+    border: 4px solid white
+    &:after
+        background-color: white
+        border-radius: 50%
+        content: ''
+        height: 38px
+        left: calc(50% - 19px)
+        position: absolute
+        top: calc(50% - 19px)
+        transition: transform .1s ease
+        width: 38px
+    &:active
+        &:after
+            transform: scale(0.92)
+    &_mobile
+        left: calc(50% - 25px)
+        top: calc(50% - 25px)
+    &_tab
+        left: calc(50% - 25px)
+        top: calc(50% - 25px)
+
+.CameraButtons__ChangeCamera
+    @include camera-button
+    background-image: url('../../icons/change-camera.svg')
+    background-position: center
+    background-repeat: no-repeat
+    background-size: 35px
+    transition: opacity .2s ease
+    visibility: hidden
+    &:active
+        opacity: 0.8
+    &_visible
+        visibility: visible
+    &_mobile
+        right: 20px
+        top: calc(50% - 25px)
+    &_tab
+        left: calc(50% - 25px)
+        top: calc(50% - 100px)

@@ -1,10 +1,10 @@
 {
   "name": "react-camera-ios",
   "version": "0.1.0",
-  "description": "Simple react implementation of iPhone/ iPad photo camera",
-  "main": "index.js",
+  "description": "Simple react implementation of iPhone / iPad photo camera",
+  "main": "src/index.js",
   "scripts": {
-    "start": "webpack-dev-server --port 8001 --config ./config/webpack.dev.js --open",
+    "start": "webpack-dev-server --port 9001 --config ./config/webpack.dev.js --open",
     "test": "jest"
   },
   "keywords": [
