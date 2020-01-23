@@ -1,24 +1,24 @@
-export const CAMERA_TYPE = {
-    FRONT: 'front',
-    REAR: 'rear',
-};
+export const DEFAULT_QUALITY = 0.92;
 
 export const DEVICE = {
     MOBILE: 'mobile',
     TAB: 'tab',
 };
 
+export const PLACEMENT = {
+    CONTAIN: 'contain',
+    COVER: 'cover',
+};
+
 export const REQUIRED_CONSTRAINTS = [
     // Media constraints
     'deviceId',
     // Video constraints
-    'facingMode',
-    'frameRate',
     'height',
     'width',
 ];
 
-export const SIZE = {
-    CONTAIN: 'contain',
-    COVER: 'cover',
+export const SIDE = {
+    BACK: 'back',
+    FRONT: 'front',
 };

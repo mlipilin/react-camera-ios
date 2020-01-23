@@ -1,63 +1,243 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import cn from 'classnames';
+
+// Components
+import CameraButtons from '../CameraButtons';
 
 // Constants
-import { CAMERA_TYPE, DEVICE, SIZE } from '../../constants';
+import { DEFAULT_QUALITY, DEVICE, PLACEMENT, SIDE } from '../../constants';
 
 // Helpers
-import { checkConstraints, getMediaDevices, getVideoDevices } from '../../helpers';
+import { getNextArrayItem } from '../../helpers/array';
+import {
+    checkBrowserCapabilities,
+    getMediaStream,
+    getVideoDevices,
+    getVideoScreenshot,
+} from '../../helpers/browser';
+import { getVideoContainSize, getVideoCoverSize } from '../../helpers/size';
 
 import styles from './styles';
 
+function getVideoDeviceIdBySide(videoDevices, side) {
+    const activeVideoDevice = side
+        ? videoDevices.find(videoDevice => videoDevice.side === side)
+        : null;
+    return (activeVideoDevice || videoDevices[0]).deviceId;
+}
+
 function Camera(props) {
-    const { onError } = props;
+    const { device, placement, quality, side, onError, onTakePhoto } = props;
 
     // State
-    const [videoTracks, setVideoTracks] = useState([]);
+    const [activeVideoDeviceId, setActiveVideoDeviceId] = useState(null);
+    const [hasError, setHasError] = useState(false);
+    const [isCameraChanging, setIsCameraChanging] = useState(false);
+    const [isCameraInitialized, setIsCameraInitialized] = useState(false);
+    const [isPhotoTaking, setIsPhotoTaking] = useState(false);
+    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+    const [mediaStream, setMediaStream] = useState(null);
+    const [videoDevices, setVideoDevices] = useState([]);
+
+    // Refs
+    const changingCamera = useRef(null);
+    const container = useRef(null);
+    const video = useRef(null);
 
     // Effects
     useEffect(() => {
-        start();
+        init();
+        return () => {
+            stopVideo();
+        };
     }, []);
+    useEffect(
+        () => {
+            if (isCameraInitialized) {
+                stopVideo();
+                reset();
+                init();
+            }
+        },
+        [placement, side],
+    );
+    useEffect(
+        () => {
+            if (videoDevices.length) {
+                setActiveVideoDeviceId(getVideoDeviceIdBySide(videoDevices, side));
+            }
+        },
+        [videoDevices.length],
+    );
+    useEffect(
+        () => {
+            if (activeVideoDeviceId) {
+                playVideo();
+            }
+        },
+        [activeVideoDeviceId],
+    );
+    useEffect(
+        () => {
+            window.addEventListener('resize', handleWindowResize);
+            if (mediaStream) {
+                resizeVideo();
+                setIsCameraInitialized(true);
+            }
+            return () => {
+                window.removeEventListener('resize', handleWindowResize);
+            };
+        },
+        [mediaStream],
+    );
 
-    function start() {
-        checkConstraints()
-            .then(getMediaDevices)
-            .then(getVideoDevices)
-            .then(({ devices, stream }) => {
-                console.log('devices', devices);
-                console.log('stream', stream);
-                // alert(devices.length);
-                // var video = document.querySelector('video');
-                // video.srcObject = devices[0];
-                // video.onloadedmetadata = function(e) {
-                //     video.play();
-                // };
-            })
-            .catch(onError);
+    // Handlers
+    function handleWindowResize(e) {
+        resizeVideo();
+    }
+    function handleTouchStart() {}
+    function handleTakePhotoClick() {
+        if (!isPhotoTaking) {
+            setIsPhotoTaking(true);
+            onTakePhoto(getVideoScreenshot(video.current, container.current, quality));
+            setTimeout(() => {
+                setIsPhotoTaking(false);
+            }, 100);
+        }
+    }
+    function handleChangeCameraClick() {
+        changingCamera.current.style.backgroundImage = `url(${getVideoScreenshot(
+            video.current,
+            container.current,
+            1,
+        )})`;
+        stopVideo();
+        setIsCameraChanging(true);
+        setTimeout(() => {
+            setActiveVideoDeviceId(
+                getNextArrayItem(videoDevices.map(d => d.deviceId), activeVideoDeviceId),
+            );
+            setIsCameraChanging(false);
+            changingCamera.current.style.backgroundImage = 'none';
+        }, 800);
     }
 
+    // Methods
+    function init() {
+        checkBrowserCapabilities()
+            .then(getVideoDevices)
+            .then(setVideoDevices)
+            .catch(error => {
+                setHasError(true);
+                onError(error);
+            });
+    }
+    function playVideo() {
+        setHasError(false);
+        getMediaStream(activeVideoDeviceId)
+            .then(mediaStream => {
+                video.current.srcObject = mediaStream;
+                video.current.onloadedmetadata = function(e) {
+                    video.current.play();
+                    setIsVideoPlaying(true);
+                };
+                return mediaStream;
+            })
+            .then(setMediaStream)
+            .catch(() => {
+                setHasError(true);
+            });
+    }
+    function stopVideo() {
+        setIsVideoPlaying(false);
+        if (mediaStream) {
+            mediaStream.getVideoTracks().forEach(videoTrack => {
+                videoTrack.stop();
+            });
+        }
+    }
+    function resizeVideo() {
+        const videoTracks = mediaStream ? mediaStream.getVideoTracks() : [];
+        const videoTrack = videoTracks.length ? videoTracks[0] : null;
+
+        if (videoTrack) {
+            const { height: videoHeight, width: videoWidth } = videoTrack.getSettings();
+            const {
+                height: containerHeight,
+                width: containerWidth,
+            } = container.current.getBoundingClientRect();
+
+            const getVideoSizeFn =
+                placement === PLACEMENT.CONTAIN ? getVideoContainSize : getVideoCoverSize;
+
+            const { width, height } = getVideoSizeFn({
+                containerHeight,
+                containerWidth,
+                videoHeight,
+                videoWidth,
+            });
+
+            video.current.style.width = `${width}px`;
+            video.current.style.height = `${height}px`;
+        }
+    }
+    function reset() {
+        setActiveVideoDeviceId(null);
+        setHasError(false);
+        setIsCameraChanging(false);
+        setIsCameraInitialized(false);
+        setIsPhotoTaking(false);
+        setIsVideoPlaying(false);
+        setMediaStream(null);
+        setVideoDevices([]);
+    }
+
+    // Render props
+    const videoClass = cn(styles.Camera__Video, {
+        [styles.Camera__Video_playing]: isVideoPlaying,
+    });
+    const changingCameraOverlayClass = cn(styles.Camera__ChangingCameraOverlay, {
+        [styles.Camera__ChangingCameraOverlay_visible]: isCameraChanging,
+    });
+    const photoTakingOverlayClass = cn(styles.Camera__PhotoTakingOverlay, {
+        [styles.Camera__PhotoTakingOverlay_visible]: isPhotoTaking,
+    });
+
     return (
-        <div className={styles.Camera}>
-            <div onClick={start}>CLICK</div>
-            <video className={styles.Camera__Video} autoPlay playsInline />
+        // onTouchStart needs for making ":active" pseudo-class works
+        // https://stackoverflow.com/questions/17233804/how-to-prevent-sticky-hover-effects-for-buttons-on-touch-devices
+        <div className={styles.Camera} onTouchStart={handleTouchStart}>
+            <div className={videoClass} ref={container}>
+                <video ref={video} autoPlay playsInline />
+                <div className={photoTakingOverlayClass} />
+                <div ref={changingCamera} className={changingCameraOverlayClass} />
+            </div>
+            <CameraButtons
+                changeCameraVisible={videoDevices.length > 1}
+                device={device}
+                disabled={!isVideoPlaying || hasError}
+                readOnly={isCameraChanging || isPhotoTaking}
+                onChangeCameraClick={handleChangeCameraClick}
+                onTakePhotoClick={handleTakePhotoClick}
+            />
         </div>
     );
 }
 
 Camera.propTypes = {
-    cameraType: PropTypes.oneOf(Object.values(CAMERA_TYPE)),
+    placement: PropTypes.oneOf(Object.values(PLACEMENT)),
     device: PropTypes.oneOf(Object.values(DEVICE)),
     quality: PropTypes.number,
-    size: PropTypes.oneOf(Object.values(SIZE)),
+    side: PropTypes.oneOf(Object.values(SIDE)),
     onError: PropTypes.func,
     onTakePhoto: PropTypes.func,
 };
 Camera.defaultProps = {
-    cameraType: CAMERA_TYPE.REAR,
     device: DEVICE.MOBILE,
-    quality: 1,
-    size: SIZE.CONTAIN,
+    placement: PLACEMENT.COVER,
+    quality: DEFAULT_QUALITY,
+    side: SIDE.BACK,
     onError: _ => _,
     onTakePhoto: _ => _,
 };

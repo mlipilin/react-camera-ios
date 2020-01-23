@@ -1,0 +1,10 @@
+@mixin size($size: 0)
+    height: $size
+    width: $size
+
+@mixin from-tab
+    @media only screen and (min-width: 768px)
+        @content
+@mixin from-desktop
+    @media only screen and (min-width: 1024px)
+        @content

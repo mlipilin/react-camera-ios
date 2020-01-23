@@ -1,6 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import Camera from './components/Camera';
+import { DEVICE, PLACEMENT, SIDE } from './constants';
 
-import App from './app';
-
-ReactDOM.render(<App />, document.getElementById('root'));
+export { DEVICE, PLACEMENT, SIDE };
+export default Camera;

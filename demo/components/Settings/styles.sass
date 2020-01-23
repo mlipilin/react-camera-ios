@@ -1,0 +1,30 @@
+.Settings
+
+.Settings__Control
+    align-items: center
+    display: flex
+    & + &
+        margin-top: 10px
+
+.Settings__ControlTitle
+    display: block
+    margin-right: 20px
+    text-align: right
+    width: 80px
+
+.Settings__ControlInput
+    flex-grow: 1
+    label
+        display: inline-block
+        font-size: 12px
+    label + label
+        margin-left: 10px
+    input[type=radio]
+        margin: 0 5px 0 0
+    input[type=number]
+        box-sizing: border-box
+        display: block
+        font-size: 12px
+        height: 30px
+        padding: 0 5px
+        width: 100%
