@@ -1,5 +1,8 @@
 name: GH pages
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   tests:
