@@ -6,13 +6,14 @@
   "keywords": [
     "camera",
     "react",
+    "ios",
     "iphone",
-    "ipad",
-    "ios"
+    "ipad"
   ],
   "author": "Mikhail Lipilin <lipilin.m@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "build:gh-pages": "webpack --config ./config/webpack.gh-pages.js",
     "start": "webpack-dev-server --port 9001 --config ./config/webpack.dev.js --open",
     "lint": "eslint --fix . && echo 'Lint complete.'",
     "test": "jest"
@@ -36,6 +37,7 @@
     "babel-loader": "^8.0.6",
     "classnames": "^2.2.6",
     "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.4.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
@@ -44,12 +46,14 @@
     "eslint-plugin-react": "^7.18.3",
     "eslint-plugin-react-hooks": "^1.7.0",
     "file-loader": "^5.0.2",
+    "gh-pages": "^2.2.0",
     "html-webpack-plugin": "^3.2.0",
     "husky": "^4.2.1",
     "jest": "^24.9.0",
     "lint-staged": "^10.0.7",
     "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.13.1",
+    "prerender-spa-plugin": "^3.4.0",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
