@@ -1,9 +1,9 @@
-name: Run tests
+name: GH pages
 on: [push]
 
 jobs:
   tests:
-    name: 'gh-pages'
+    name: 'GH pages'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
