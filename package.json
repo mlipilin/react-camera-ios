@@ -14,6 +14,7 @@
   "license": "MIT",
   "scripts": {
     "build:gh-pages": "webpack --config ./config/webpack.gh-pages.js",
+    "deploy": "npm run build:gh-pages && gh-pages -d gh-pages && rm -rf gh-pages",
     "start": "webpack-dev-server --port 9001 --config ./config/webpack.dev.js --open",
     "lint": "eslint --fix . && echo 'Lint complete.'",
     "test": "jest"
@@ -46,6 +47,7 @@
     "eslint-plugin-react": "^7.18.3",
     "eslint-plugin-react-hooks": "^1.7.0",
     "file-loader": "^5.0.2",
+    "gh-pages": "^2.2.0",
     "html-webpack-plugin": "^3.2.0",
     "husky": "^4.2.1",
     "jest": "^24.9.0",
