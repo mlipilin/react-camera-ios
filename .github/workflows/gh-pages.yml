@@ -5,12 +5,12 @@ jobs:
   tests:
     name: 'GH pages'
     runs-on: ubuntu-latest
+    env:
+      GITHUB_ACTOR: mlipilin
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: '10.x'
-      - run: git config user.name 'Mikhail Lipilin'
-      - run: git config user.email lipilin.m@gmail.com
       - run: npm install
       - run: npm run publish:gh-pages
