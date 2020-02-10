@@ -2,7 +2,8 @@
   "name": "react-camera-ios",
   "version": "0.1.0",
   "description": "Simple react implementation of iPhone / iPad photo camera",
-  "main": "src/index.js",
+  "main": "build/index.js",
+  "source": "src/index.js",
   "keywords": [
     "camera",
     "react",
@@ -13,9 +14,11 @@
   "author": "Mikhail Lipilin <lipilin.m@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build:gh-pages": "webpack --config ./config/webpack.gh-pages.js",
+    "build": "webpack --config ./config/webpack.build.js",
+    "gh-pages": "webpack --config ./config/webpack.gh-pages.js",
     "start": "webpack-dev-server --port 9001 --config ./config/webpack.dev.js --open",
     "lint": "eslint --fix . && echo 'Lint complete.'",
+    "publish-npm": "npm run build && npm publish",
     "test": "jest"
   },
   "lint-staged": {
