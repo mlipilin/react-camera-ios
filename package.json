@@ -18,7 +18,7 @@
     "gh-pages": "webpack --config ./config/webpack.gh-pages.js",
     "start": "webpack-dev-server --port 9001 --config ./config/webpack.dev.js --open",
     "lint": "eslint --fix . && echo 'Lint complete.'",
-    "publish-npm": "npm run build && npm publish",
+    "publish-npm": "npm run build && npm publish && rm -rf build",
     "test": "jest"
   },
   "lint-staged": {

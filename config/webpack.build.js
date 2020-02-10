@@ -1,6 +1,8 @@
 const path = require('path');
 const merge = require('webpack-merge');
 
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
 const common = require('./webpack.common');
 
 module.exports = merge(common, {
@@ -13,6 +15,11 @@ module.exports = merge(common, {
     path: path.resolve(__dirname, '../build'),
     publicPath: '',
   },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
+    }),
+  ],
   externals: {
     react: {
       commonjs: 'react',
