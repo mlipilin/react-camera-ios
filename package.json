@@ -14,7 +14,6 @@
   "license": "MIT",
   "scripts": {
     "build:gh-pages": "webpack --config ./config/webpack.gh-pages.js",
-    "publish:gh-pages": "npm run build:gh-pages && gh-pages -u 'Mikhail Lipilin <lipilin.m@gmail.com>' -d gh-pages && rm -rf gh-pages",
     "start": "webpack-dev-server --port 9001 --config ./config/webpack.dev.js --open",
     "lint": "eslint --fix . && echo 'Lint complete.'",
     "test": "jest"

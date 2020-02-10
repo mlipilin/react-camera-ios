@@ -2,15 +2,18 @@ name: GH pages
 on: [push]
 
 jobs:
-  tests:
-    name: 'GH pages'
+  deploy:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_ACTOR: mlipilin
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: '10.x'
       - run: npm install
-      - run: npm run publish:gh-pages
+      - run: npm run build:gh-pages
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./gh-pages
+      - run: rm -rf gh-pages
