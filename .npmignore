@@ -1,9 +1,10 @@
 .github/
-.eslintrc.json
-.npmignore
 config/
 dev/
 node_modules/
 public/
 src/
+.eslintrc.json
+.npmignore
+babel.config.js
 package-lock.json
