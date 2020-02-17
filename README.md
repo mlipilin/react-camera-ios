@@ -34,17 +34,23 @@ import Camera, { DEVICE, FACING_MODE, PLACEMENT } from 'react-camera-ios';
 // Styles
 import 'react-camera-ios/build/styles.css';
 
+const containerStyle = { display: 'flex', height: '300px', width: '300px' };
+
 ReactDOM.render(
-  <Camera
-    device={DEVICE.MOBILE}
-    facingMode={FACING_MODE.ENVIRONMENT}
-    placement={PLACEMENT.COVER}
-    quality="1"
-    onError={error => console.log(error)}
-    onTakePhoto={dataUrl => console.log(dataUrl)}
-  />,
-  document.getElementById('root')
+  <div style={containerStyle}>
+    <Camera
+      device={DEVICE.MOBILE}
+      facingMode={FACING_MODE.ENVIRONMENT}
+      placement={PLACEMENT.COVER}
+      quality="1"
+      onError={error => console.log(error)}
+      onTakePhoto={dataUrl => console.log(dataUrl)}
+    />
+  </div>,
+  document.getElementById('root'),
 );
+
+
 ```
 
 ## Constants

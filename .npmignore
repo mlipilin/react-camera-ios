@@ -1,6 +1,9 @@
 .github/
+.eslintrc.json
+.npmignore
 config/
 dev/
 node_modules/
 public/
+src/
 package-lock.json

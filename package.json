@@ -11,6 +11,11 @@
     "ipad"
   ],
   "author": "Mikhail Lipilin <lipilin.m@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mlipilin/react-camera-ios.git"
+  },
+  "homepage": "https://mlipilin.github.io/react-camera-ios/",
   "license": "MIT",
   "scripts": {
     "build": "webpack --config ./config/webpack.build.js",
