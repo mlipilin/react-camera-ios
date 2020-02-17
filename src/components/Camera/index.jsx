@@ -7,7 +7,7 @@ import CameraButtons from '../CameraButtons';
 
 // Constants
 import {
-  DEFAULT_QUALITY, DEVICE, PLACEMENT, SIDE,
+  DEFAULT_QUALITY, DEVICE, PLACEMENT, FACING_MODE,
 } from '../../constants';
 
 // Helpers
@@ -22,16 +22,16 @@ import { getVideoContainSize, getVideoCoverSize } from '../../helpers/size';
 
 import styles from './styles.sass';
 
-function getVideoDeviceIdBySide(videoDevices, side) {
-  const activeVideoDevice = side
-    ? videoDevices.find((videoDevice) => videoDevice.side === side)
+function getVideoDeviceIdBySide(videoDevices, facingMode) {
+  const activeVideoDevice = facingMode
+    ? videoDevices.find((videoDevice) => videoDevice.facingMode === facingMode)
     : null;
   return (activeVideoDevice || videoDevices[0]).deviceId;
 }
 
 function Camera(props) {
   const {
-    device, placement, quality, side, onError, onTakePhoto,
+    device, facingMode, placement, quality, onError, onTakePhoto,
   } = props;
 
   // State
@@ -166,12 +166,12 @@ function Camera(props) {
         init();
       }
     },
-    [placement, side],
+    [placement, facingMode],
   );
   useEffect(
     () => {
       if (videoDevices.length) {
-        setActiveVideoDeviceId(getVideoDeviceIdBySide(videoDevices, side));
+        setActiveVideoDeviceId(getVideoDeviceIdBySide(videoDevices, facingMode));
       }
     },
     [videoDevices.length],
@@ -232,17 +232,17 @@ function Camera(props) {
 
 Camera.propTypes = {
   placement: PropTypes.oneOf(Object.values(PLACEMENT)),
+  facingMode: PropTypes.oneOf(Object.values(FACING_MODE)),
   device: PropTypes.oneOf(Object.values(DEVICE)),
   quality: PropTypes.number,
-  side: PropTypes.oneOf(Object.values(SIDE)),
   onError: PropTypes.func,
   onTakePhoto: PropTypes.func,
 };
 Camera.defaultProps = {
   device: DEVICE.MOBILE,
+  facingMode: FACING_MODE.ENVIRONMENT,
   placement: PLACEMENT.COVER,
   quality: DEFAULT_QUALITY,
-  side: SIDE.BACK,
   onError: () => {},
   onTakePhoto: () => {},
 };

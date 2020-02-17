@@ -5,6 +5,11 @@ export const DEVICE = {
   TAB: 'tab',
 };
 
+export const FACING_MODE = {
+  ENVIRONMENT: 'environment',
+  USER: 'user',
+};
+
 export const PLACEMENT = {
   CONTAIN: 'contain',
   COVER: 'cover',
@@ -17,8 +22,3 @@ export const REQUIRED_CONSTRAINTS = [
   'height',
   'width',
 ];
-
-export const SIDE = {
-  BACK: 'back',
-  FRONT: 'front',
-};

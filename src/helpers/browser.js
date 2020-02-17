@@ -1,5 +1,5 @@
 // Constants
-import { REQUIRED_CONSTRAINTS, SIDE } from '../constants';
+import { REQUIRED_CONSTRAINTS, FACING_MODE } from '../constants';
 import {
   BROWSER_NOT_SUPPORT_CONSTRAINTS,
   INSECURE_CONTEXT_ERROR,
@@ -47,22 +47,22 @@ export const getMediaStream = (deviceId = null) => navigator.mediaDevices
 export const getVideoDevices = () => getMediaStream()
   .then(enumerateDevices)
   .then(filterVideoDevices)
-  // Detect camera side by deviceInfo label
+  // Detect camera facingMode by deviceInfo label
   .then((deviceInfos) => deviceInfos.map((deviceInfo) => {
-    let side = null;
+    let facingMode = null;
     if (deviceInfo && typeof deviceInfo.label === 'string') {
       const label = deviceInfo.label.toLowerCase();
       if (label.includes('back')) {
-        side = SIDE.BACK;
+        facingMode = FACING_MODE.ENVIRONMENT;
       } else if (label.includes('front')) {
-        side = SIDE.FRONT;
+        facingMode = FACING_MODE.USER;
       }
     }
-    return createVideoDevice({ deviceId: deviceInfo.deviceId, deviceInfo, side });
+    return createVideoDevice({ deviceId: deviceInfo.deviceId, deviceInfo, facingMode });
   }))
-  // Detect camera side by deviceInfo's videoTrack facingMode
+  // Detect camera facingMode by deviceInfo's videoTrack facingMode
   .then((deviceInfos) => {
-    const hasDeviceInfosSide = deviceInfos.every((deviceInfo) => deviceInfo.side !== null);
+    const hasDeviceInfosSide = deviceInfos.every((deviceInfo) => deviceInfo.facingMode !== null);
     if (hasDeviceInfosSide) {
       return deviceInfos;
     }
@@ -77,16 +77,16 @@ export const getVideoDevices = () => getMediaStream()
         return hasVideoTrackSettings ? videoTracks[0].getSettings() || {} : {};
       }))
       .then((videoTracksSettings) => deviceInfos.map((deviceInfo, index) => {
-        let { side } = deviceInfo;
+        let { facingMode } = deviceInfo;
         if (videoTracksSettings[index]) {
           if (videoTracksSettings[index].facingMode === 'environment') {
-            side = SIDE.BACK;
+            facingMode = FACING_MODE.ENVIRONMENT;
           }
           if (videoTracksSettings[index].facingMode === 'user') {
-            side = SIDE.FRONT;
+            facingMode = FACING_MODE.USER;
           }
         }
-        return createVideoDevice({ ...deviceInfo, side });
+        return createVideoDevice({ ...deviceInfo, facingMode });
       }));
   });
 
