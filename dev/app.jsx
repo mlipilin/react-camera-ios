@@ -8,7 +8,7 @@ import Camera from '../src';
 
 // Constants
 import {
-  DEFAULT_QUALITY, DEVICE, PLACEMENT, SIDE,
+  DEFAULT_QUALITY, DEVICE, PLACEMENT, FACING_MODE,
 } from '../src/constants';
 
 import styles from './app.sass';
@@ -17,9 +17,9 @@ function App() {
   // Hooks
   const [settings, setSettings] = useState({
     device: DEVICE.MOBILE,
+    facingMode: FACING_MODE.ENVIRONMENT,
     placement: PLACEMENT.COVER,
     quality: DEFAULT_QUALITY,
-    side: SIDE.BACK,
   });
 
   // Handlers
@@ -45,9 +45,9 @@ function App() {
       <main className={styles.App__Main}>
         <Camera
           device={settings.device}
+          facingMode={settings.facingMode}
           placement={settings.placement}
           quality={settings.quality}
-          side={settings.side}
           onTakePhoto={handleCameraTakePhoto}
         />
       </main>

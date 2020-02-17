@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 
 // Constants
 import {
-  DEFAULT_QUALITY, DEVICE, PLACEMENT, SIDE,
+  DEFAULT_QUALITY, DEVICE, PLACEMENT, FACING_MODE,
 } from '../../../src/constants';
 
 import styles from './styles.sass';
 
 function Settings(props) {
   const {
-    device, placement, quality, side, onChange,
+    device, facingMode, placement, quality, onChange,
   } = props;
 
   // Handlers
@@ -69,11 +69,11 @@ function Settings(props) {
       <div className={styles.Settings__Control}>
         <div className={styles.Settings__ControlTitle}>Side:</div>
         <div className={styles.Settings__ControlInput}>
-          {Object.values(SIDE).map((value) => (
+          {Object.values(FACING_MODE).map((value) => (
             <label key={value}>
               <input
-                checked={value === side}
-                name="side"
+                checked={value === facingMode}
+                name="facingMode"
                 type="radio"
                 value={value}
                 onChange={handleChange}
@@ -105,16 +105,16 @@ function Settings(props) {
 
 Settings.propTypes = {
   device: PropTypes.oneOf(Object.values(DEVICE)),
+  facingMode: PropTypes.oneOf(Object.values(FACING_MODE)),
   placement: PropTypes.oneOf(Object.values(PLACEMENT)),
   quality: PropTypes.number,
-  side: PropTypes.oneOf(Object.values(SIDE)),
   onChange: PropTypes.func,
 };
 Settings.defaultProps = {
   device: DEVICE.MOBILE,
+  facingMode: FACING_MODE.ENVIRONMENT,
   placement: PLACEMENT.COVER,
   quality: DEFAULT_QUALITY,
-  side: SIDE.BACK,
   onChange: (_) => _,
 };
 

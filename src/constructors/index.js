@@ -6,8 +6,12 @@ export const createConstraints = (deviceId) => ({
   },
 });
 
-export const createVideoDevice = ({ deviceId = null, side = null, deviceInfo = null } = {}) => ({
+export const createVideoDevice = ({
+  deviceId = null,
+  facingMode = null,
+  deviceInfo = null,
+} = {}) => ({
   deviceId,
   deviceInfo,
-  side,
+  facingMode,
 });
