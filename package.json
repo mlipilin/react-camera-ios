@@ -1,6 +1,6 @@
 {
   "name": "react-camera-ios",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Simple react implementation of iPhone / iPad photo camera",
   "main": "build/index.js",
   "keywords": [
