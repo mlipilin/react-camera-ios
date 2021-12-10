@@ -31,7 +31,7 @@ function getVideoDeviceIdBySide(videoDevices, facingMode) {
 
 function Camera(props) {
   const {
-    device, facingMode, placement, quality, onError, onTakePhoto,
+    device, facingMode, isStoppedVideo, placement, quality, onError, onTakePhoto,
   } = props;
 
   // State
@@ -64,7 +64,7 @@ function Camera(props) {
     getMediaStream(activeVideoDeviceId)
       .then((stream) => {
         video.current.srcObject = stream;
-        video.current.onloadedmetadata = function () {
+        video.current.onloadedmetadata = () => {
           video.current.play();
           setIsVideoPlaying(true);
         };
@@ -119,6 +119,12 @@ function Camera(props) {
     setMediaStream(null);
     setVideoDevices([]);
   }
+
+  useEffect(() => {
+    if (isStoppedVideo) {
+      stopVideo();
+    }
+  }, [isStoppedVideo]);
 
   // Handlers
   function handleWindowResize() {
@@ -231,9 +237,10 @@ function Camera(props) {
 }
 
 Camera.propTypes = {
-  placement: PropTypes.oneOf(Object.values(PLACEMENT)),
-  facingMode: PropTypes.oneOf(Object.values(FACING_MODE)),
   device: PropTypes.oneOf(Object.values(DEVICE)),
+  facingMode: PropTypes.oneOf(Object.values(FACING_MODE)),
+  isStoppedVideo: PropTypes.bool,
+  placement: PropTypes.oneOf(Object.values(PLACEMENT)),
   quality: PropTypes.number,
   onError: PropTypes.func,
   onTakePhoto: PropTypes.func,
@@ -241,6 +248,7 @@ Camera.propTypes = {
 Camera.defaultProps = {
   device: DEVICE.MOBILE,
   facingMode: FACING_MODE.ENVIRONMENT,
+  isStoppedVideo: false,
   placement: PLACEMENT.COVER,
   quality: DEFAULT_QUALITY,
   onError: () => {},
