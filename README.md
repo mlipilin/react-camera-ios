@@ -79,7 +79,7 @@ Name | Description | Type | Default value
 --- | --- | --- | ---
 **device**|Which style of camera do you want to see:<br>**DEVICE.MOBILE** - iPhone camera style,<br>**DEVICE.TAB** - iPad camera style.|*string*|`DEVICE.MOBILE`
 **facingMode**| In which side of device do you want to open camera:<br>**FACING_MODE.ENVIRONMENT** - back (main) camera,<br>**FACING_MODE.USER** - front camera.<br>It works like [MediaTrackConstraints.facingMode](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode)|*string*|`FACING_MODE.ENVIRONMENT`
-**isStoppedVideo**|Disable camera|*bool*|`false`
+**isStarted**| Turn on camera | *bool* | `true`
 **placement**|Camera placement relative to the container:<br>**PLACEMENT.CONTAIN** - scales the camera as large as possible without cropping,<br>**PLACEMENT.COVER** - scales the camera as large as possible (but if the proportions of the camera differ from the container, it is cropped either vertically or horizontally so that no empty space remains).<br>It works like [CSS background-size property](https://developer.mozilla.org/en-US/docs/Web/CSS/background-size)|*string*|`PLACEMENT.COVER`
 **quality**|The quality of photo (a number between 0 and 1). It will be passed to [canvas.toDataURL()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL)|*number*|`0.92`
 **onError(error)**|Called when an error is occured (error object will be passed as an agrument)|*func*|

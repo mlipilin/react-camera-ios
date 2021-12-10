@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 
 // Constants
 import {
-  DEFAULT_QUALITY, DEVICE, PLACEMENT, FACING_MODE,
+  DEFAULT_QUALITY, DEVICE, FACING_MODE, PLACEMENT, TURN,
 } from '../../../src/constants';
 
 import styles from './styles.sass';
 
 function Settings(props) {
   const {
-    device, facingMode, placement, quality, onChange,
+    device, facingMode, placement, quality, turn, onChange,
   } = props;
 
   // Handlers
@@ -84,6 +84,25 @@ function Settings(props) {
         </div>
       </div>
 
+      {/* Turn */}
+      <div className={styles.Settings__Control}>
+        <div className={styles.Settings__ControlTitle}>Turn:</div>
+        <div className={styles.Settings__ControlInput}>
+          {Object.values(TURN).map((value) => (
+            <label key={value}>
+              <input
+                checked={value === turn}
+                name="turn"
+                type="radio"
+                value={value}
+                onChange={handleChange}
+              />
+              {value}
+            </label>
+          ))}
+        </div>
+      </div>
+
       {/* Quality */}
       <div className={styles.Settings__Control}>
         <div className={styles.Settings__ControlTitle}>Quality:</div>
@@ -108,6 +127,7 @@ Settings.propTypes = {
   facingMode: PropTypes.oneOf(Object.values(FACING_MODE)),
   placement: PropTypes.oneOf(Object.values(PLACEMENT)),
   quality: PropTypes.number,
+  turn: PropTypes.oneOf(Object.values(TURN)),
   onChange: PropTypes.func,
 };
 Settings.defaultProps = {
@@ -115,6 +135,7 @@ Settings.defaultProps = {
   facingMode: FACING_MODE.ENVIRONMENT,
   placement: PLACEMENT.COVER,
   quality: DEFAULT_QUALITY,
+  turn: TURN.ON,
   onChange: (_) => _,
 };
 

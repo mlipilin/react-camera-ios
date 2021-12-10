@@ -15,6 +15,11 @@ export const PLACEMENT = {
   COVER: 'cover',
 };
 
+export const TURN = {
+  ON: 'on',
+  OFF: 'off',
+};
+
 export const REQUIRED_CONSTRAINTS = [
   // Media constraints
   'deviceId',

@@ -8,7 +8,7 @@ import Camera from '../src';
 
 // Constants
 import {
-  DEFAULT_QUALITY, DEVICE, PLACEMENT, FACING_MODE,
+  DEFAULT_QUALITY, DEVICE, FACING_MODE, PLACEMENT, TURN,
 } from '../src/constants';
 
 import styles from './app.sass';
@@ -20,6 +20,7 @@ function App() {
     facingMode: FACING_MODE.ENVIRONMENT,
     placement: PLACEMENT.COVER,
     quality: DEFAULT_QUALITY,
+    turn: TURN.ON,
   });
 
   // Handlers
@@ -46,6 +47,7 @@ function App() {
         <Camera
           device={settings.device}
           facingMode={settings.facingMode}
+          isStarted={settings.turn === TURN.ON}
           placement={settings.placement}
           quality={settings.quality}
           onTakePhoto={handleCameraTakePhoto}
