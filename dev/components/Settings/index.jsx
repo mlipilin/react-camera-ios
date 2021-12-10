@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 
 // Constants
 import {
-  DEFAULT_QUALITY, DEVICE, PLACEMENT, FACING_MODE,
+  DEFAULT_QUALITY, DEVICE, FACING_MODE, PLACEMENT,
 } from '../../../src/constants';
 
 import styles from './styles.sass';
 
 function Settings(props) {
   const {
-    device, facingMode, placement, quality, onChange,
+    device, facingMode, placement, quality, isTurnedOn, onChange,
   } = props;
 
   // Handlers
@@ -20,6 +20,9 @@ function Settings(props) {
     let { value } = e.target;
     if (key === 'quality') {
       value = Number(value) || null;
+    }
+    if (key === 'isTurnedOn') {
+      value = value === 'on';
     }
 
     onChange(key, value);
@@ -84,6 +87,33 @@ function Settings(props) {
         </div>
       </div>
 
+      {/* Turn */}
+      <div className={styles.Settings__Control}>
+        <div className={styles.Settings__ControlTitle}>Turn:</div>
+        <div className={styles.Settings__ControlInput}>
+          <label key="true">
+            <input
+              checked={isTurnedOn}
+              name="isTurnedOn"
+              type="radio"
+              value="on"
+              onChange={handleChange}
+            />
+            true
+          </label>
+          <label key="false">
+            <input
+              checked={!isTurnedOn}
+              name="isTurnedOn"
+              type="radio"
+              value="off"
+              onChange={handleChange}
+            />
+            false
+          </label>
+        </div>
+      </div>
+
       {/* Quality */}
       <div className={styles.Settings__Control}>
         <div className={styles.Settings__ControlTitle}>Quality:</div>
@@ -108,6 +138,7 @@ Settings.propTypes = {
   facingMode: PropTypes.oneOf(Object.values(FACING_MODE)),
   placement: PropTypes.oneOf(Object.values(PLACEMENT)),
   quality: PropTypes.number,
+  isTurnedOn: PropTypes.bool,
   onChange: PropTypes.func,
 };
 Settings.defaultProps = {
@@ -115,6 +146,7 @@ Settings.defaultProps = {
   facingMode: FACING_MODE.ENVIRONMENT,
   placement: PLACEMENT.COVER,
   quality: DEFAULT_QUALITY,
+  isTurnedOn: true,
   onChange: (_) => _,
 };
 

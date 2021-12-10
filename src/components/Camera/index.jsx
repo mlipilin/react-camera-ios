@@ -31,7 +31,7 @@ function getVideoDeviceIdBySide(videoDevices, facingMode) {
 
 function Camera(props) {
   const {
-    device, facingMode, placement, quality, onError, onTakePhoto,
+    device, facingMode, isTurnedOn, placement, quality, onError, onTakePhoto,
   } = props;
 
   // State
@@ -64,7 +64,7 @@ function Camera(props) {
     getMediaStream(activeVideoDeviceId)
       .then((stream) => {
         video.current.srcObject = stream;
-        video.current.onloadedmetadata = function () {
+        video.current.onloadedmetadata = () => {
           video.current.play();
           setIsVideoPlaying(true);
         };
@@ -178,12 +178,19 @@ function Camera(props) {
   );
   useEffect(
     () => {
-      if (activeVideoDeviceId) {
+      if (activeVideoDeviceId && isTurnedOn) {
         playVideo();
       }
     },
     [activeVideoDeviceId],
   );
+  useEffect(() => {
+    if (isTurnedOn) {
+      playVideo();
+    } else {
+      stopVideo();
+    }
+  }, [isTurnedOn]);
   useEffect(
     () => {
       window.addEventListener('resize', handleWindowResize);
@@ -231,9 +238,10 @@ function Camera(props) {
 }
 
 Camera.propTypes = {
-  placement: PropTypes.oneOf(Object.values(PLACEMENT)),
-  facingMode: PropTypes.oneOf(Object.values(FACING_MODE)),
   device: PropTypes.oneOf(Object.values(DEVICE)),
+  facingMode: PropTypes.oneOf(Object.values(FACING_MODE)),
+  isTurnedOn: PropTypes.bool,
+  placement: PropTypes.oneOf(Object.values(PLACEMENT)),
   quality: PropTypes.number,
   onError: PropTypes.func,
   onTakePhoto: PropTypes.func,
@@ -241,6 +249,7 @@ Camera.propTypes = {
 Camera.defaultProps = {
   device: DEVICE.MOBILE,
   facingMode: FACING_MODE.ENVIRONMENT,
+  isTurnedOn: true,
   placement: PLACEMENT.COVER,
   quality: DEFAULT_QUALITY,
   onError: () => {},
