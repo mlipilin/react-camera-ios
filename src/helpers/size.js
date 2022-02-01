@@ -4,12 +4,12 @@ export const getVideoContainSize = ({
   videoWidth = 0,
   videoHeight = 0,
 } = {}) => {
-  if (containerWidth === 0 || containerHeight === 0 || videoWidth === 0 || videoHeight === 0) {
-    return { width: 0, height: 0 };
-  }
-
   let width = 0;
   let height = 0;
+  if (containerWidth === 0 || containerHeight === 0 || videoWidth === 0 || videoHeight === 0) {
+    return { width, height };
+  }
+
   const videoAspectRatio = videoWidth / videoHeight;
   const containerAspectRatio = containerWidth / containerHeight;
 
@@ -33,12 +33,12 @@ export const getVideoCoverSize = ({
   videoWidth = 0,
   videoHeight = 0,
 } = {}) => {
-  if (containerWidth === 0 || containerHeight === 0 || videoWidth === 0 || videoHeight === 0) {
-    return { width: 0, height: 0 };
-  }
-
   let width = 0;
   let height = 0;
+  if (containerWidth === 0 || containerHeight === 0 || videoWidth === 0 || videoHeight === 0) {
+    return { width, height };
+  }
+
   const videoAspectRatio = videoWidth / videoHeight;
   const containerAspectRatio = containerWidth / containerHeight;
 
@@ -57,12 +57,13 @@ export const getVideoCoverSize = ({
 };
 
 export const getVideoVisibleSquare = (video, container) => {
-  const videoVisibleSquareWidth = Math.min(video.offsetWidth, container.offsetWidth);
-  const videoVisibleSquareHeight = Math.min(video.offsetHeight, container.offsetHeight);
+  const minSquareWidth = video.offsetWidth;
+  const minSquareHeight = video.offsetHeight;
+  const videoVisibleSquareWidth = Math.min(minSquareWidth, container.offsetWidth);
+  const videoVisibleSquareHeight = Math.min(minSquareHeight, container.offsetHeight);
 
   const visibleCoeffWidth = videoVisibleSquareWidth / video.offsetWidth;
   const visibleCoeffHeight = videoVisibleSquareHeight / video.offsetHeight;
-  // alert(`${video.videoWidth} x ${video.videoHeight}`);
   const sWidth = video.videoWidth * visibleCoeffWidth;
   const sHeight = video.videoHeight * visibleCoeffHeight;
 
