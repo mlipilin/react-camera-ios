@@ -35,12 +35,16 @@ function App() {
     w.document.write(image.outerHTML);
   }
 
+  function handleChangeFacingMode(mode) {
+    setSettings((prevState) => ({ ...prevState, facingMode: mode }));
+  }
+
   return (
     <div className={styles.App}>
-      <header className={styles.App__Header}>
-        <Header />
-      </header>
       <aside className={styles.App__Sidebar}>
+        <header className={styles.App__Header}>
+          <Header />
+        </header>
         <Settings {...settings} onChange={handleSettingsChange} />
       </aside>
       <main className={styles.App__Main}>
@@ -50,6 +54,7 @@ function App() {
           isTurnedOn={settings.isTurnedOn}
           placement={settings.placement}
           quality={settings.quality}
+          onChangeFacingMode={handleChangeFacingMode}
           onTakePhoto={handleCameraTakePhoto}
         />
       </main>

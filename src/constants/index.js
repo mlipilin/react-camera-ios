@@ -22,3 +22,8 @@ export const REQUIRED_CONSTRAINTS = [
   'height',
   'width',
 ];
+
+export const ORIENTATION_MODE = {
+  LANDSCAPE: 'landscape',
+  PORTRAIT: 'portrait',
+};

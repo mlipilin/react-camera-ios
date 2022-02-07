@@ -1,4 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect, useLayoutEffect, useRef, useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 
@@ -31,7 +34,7 @@ function getVideoDeviceIdBySide(videoDevices, facingMode) {
 
 function Camera(props) {
   const {
-    device, facingMode, isTurnedOn, placement, quality, onError, onTakePhoto,
+    device, facingMode, isTurnedOn, placement, quality, onChangeFacingMode, onError, onTakePhoto,
   } = props;
 
   // State
@@ -83,32 +86,36 @@ function Camera(props) {
       });
     }
   }
-  function resizeVideo() {
-    const videoTracks = mediaStream ? mediaStream.getVideoTracks() : [];
-    const videoTrack = videoTracks.length ? videoTracks[0] : null;
+  const resizeVideo = useCallback(() => {
+    setTimeout(() => {
+      const videoTracks = mediaStream ? mediaStream.getVideoTracks() : [];
+      const videoTrack = videoTracks.length ? videoTracks[0] : null;
 
-    if (videoTrack) {
-      const { height: videoHeight, width: videoWidth } = videoTrack.getSettings();
-      const {
-        height: containerHeight,
-        width: containerWidth,
-      } = container.current.getBoundingClientRect();
+      if (videoTrack) {
+        const { height: videoHeight, width: videoWidth } = videoTrack.getSettings();
+        const {
+          height: containerHeight,
+          width: containerWidth,
+        } = container.current.getBoundingClientRect();
 
-      const getVideoSizeFn = placement === PLACEMENT.CONTAIN
-        ? getVideoContainSize
-        : getVideoCoverSize;
+        const getVideoSizeFn = placement === PLACEMENT.CONTAIN
+          ? getVideoContainSize
+          : getVideoCoverSize;
 
-      const { width, height } = getVideoSizeFn({
-        containerHeight,
-        containerWidth,
-        videoHeight,
-        videoWidth,
-      });
+        const { width, height } = getVideoSizeFn({
+          containerHeight,
+          containerWidth,
+          videoHeight,
+          videoWidth,
+        });
 
-      video.current.style.width = `${width}px`;
-      video.current.style.height = `${height}px`;
-    }
-  }
+        video.current.style.height = `${height}px`;
+        video.current.style.width = `${width}px`;
+      }
+    },
+    300);
+  }, [mediaStream, placement]);
+  // };
   function reset() {
     setActiveVideoDeviceId(null);
     setHasError(false);
@@ -120,10 +127,6 @@ function Camera(props) {
     setVideoDevices([]);
   }
 
-  // Handlers
-  function handleWindowResize() {
-    resizeVideo();
-  }
   function handleTouchStart() {}
   function handleTakePhotoClick() {
     if (!isPhotoTaking) {
@@ -143,8 +146,13 @@ function Camera(props) {
     stopVideo();
     setIsCameraChanging(true);
     setTimeout(() => {
+      const newVideoDeviceId = getNextArrayItem(videoDevices.map((d) => d.deviceId), activeVideoDeviceId);
+      const newVideoDevice = videoDevices.find((d) => d.deviceId === newVideoDeviceId);
+      if (newVideoDevice) {
+        onChangeFacingMode(newVideoDevice.facingMode);
+      }
       setActiveVideoDeviceId(
-        getNextArrayItem(videoDevices.map((d) => d.deviceId), activeVideoDeviceId),
+        newVideoDeviceId,
       );
       setIsCameraChanging(false);
       changingCamera.current.style.backgroundImage = 'none';
@@ -158,6 +166,12 @@ function Camera(props) {
       stopVideo();
     };
   }, []);
+  useLayoutEffect(() => {
+    window.addEventListener('resize', resizeVideo);
+    return () => {
+      window.removeEventListener('resize', resizeVideo);
+    };
+  }, [resizeVideo]);
   useEffect(
     () => {
       if (isCameraInitialized) {
@@ -168,6 +182,7 @@ function Camera(props) {
     },
     [placement, facingMode],
   );
+
   useEffect(
     () => {
       if (videoDevices.length) {
@@ -181,28 +196,23 @@ function Camera(props) {
       if (activeVideoDeviceId && isTurnedOn) {
         playVideo();
       }
+      if (!isTurnedOn) {
+        stopVideo();
+      }
     },
-    [activeVideoDeviceId],
+    [activeVideoDeviceId, isTurnedOn],
   );
-  useEffect(() => {
-    if (isTurnedOn) {
-      playVideo();
-    } else {
-      stopVideo();
-    }
-  }, [isTurnedOn]);
+
   useEffect(
     () => {
-      window.addEventListener('resize', handleWindowResize);
       if (mediaStream) {
-        resizeVideo();
         setIsCameraInitialized(true);
+        setTimeout(() => {
+          resizeVideo();
+        }, 200);
       }
-      return () => {
-        window.removeEventListener('resize', handleWindowResize);
-      };
     },
-    [mediaStream],
+    [mediaStream, resizeVideo],
   );
 
   // Render props
@@ -238,20 +248,23 @@ function Camera(props) {
 }
 
 Camera.propTypes = {
-  device: PropTypes.oneOf(Object.values(DEVICE)),
-  facingMode: PropTypes.oneOf(Object.values(FACING_MODE)),
+  device: PropTypes.string,
+  facingMode: PropTypes.string,
   isTurnedOn: PropTypes.bool,
-  placement: PropTypes.oneOf(Object.values(PLACEMENT)),
-  quality: PropTypes.number,
+  placement: PropTypes.string,
+  quality: PropTypes.string,
+  onChangeFacingMode: PropTypes.func,
   onError: PropTypes.func,
   onTakePhoto: PropTypes.func,
 };
+
 Camera.defaultProps = {
   device: DEVICE.MOBILE,
   facingMode: FACING_MODE.ENVIRONMENT,
   isTurnedOn: true,
   placement: PLACEMENT.COVER,
   quality: DEFAULT_QUALITY,
+  onChangeFacingMode: (_) => _,
   onError: () => {},
   onTakePhoto: () => {},
 };
